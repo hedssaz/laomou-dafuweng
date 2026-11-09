@@ -1,0 +1,184 @@
+:root {
+  --bg: #1b0f2e;
+  --ink: #fff;
+  --accent: #ffcf3a;
+  --font: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+    "Noto Sans CJK SC", "Source Han Sans SC", "WenQuanYi Micro Hei", sans-serif;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  touch-action: none;
+  overscroll-behavior: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: var(--font);
+}
+
+#game {
+  display: block;
+  touch-action: none;
+}
+
+/* nickname box and share card: real HTML above the canvas so phone keyboards and long-press save work (as in 老谋格斗) */
+.overlay {
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  z-index: 20;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 16px;
+  box-sizing: border-box;
+  background: rgba(12, 4, 26, 0.82);
+  color: var(--ink);
+  overflow: auto;
+}
+
+.overlay[hidden] { display: none; }
+
+.overlay .card {
+  width: min(420px, 100%);
+  box-sizing: border-box;
+  padding: 18px 20px;
+  border: 3px solid var(--accent);
+  border-radius: 18px;
+  background: #2a1240;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  transform: rotate(-0.6deg);
+}
+
+.overlay h2 { margin: 0 0 6px; font-size: 22px; font-weight: 900; color: var(--accent); }
+.overlay p { margin: 0 0 12px; font-size: 15px; opacity: 0.88; line-height: 1.5; }
+.overlay .name-rule { font-size: 13px; color: #ffd0a0; opacity: 1; }
+#name-policy-message { margin: 8px 0 0; color: #ff6a8a; font-weight: 800; opacity: 1; }
+
+#name-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 18px;
+  color: #24103d;
+  background: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.overlay .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 14px;
+}
+
+.overlay .row button, .overlay .row .btn {
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  padding: 10px 20px;
+  border: 2px solid #24103d;
+  border-radius: 999px;
+  color: #2a1240;
+  background: linear-gradient(#ffe066, #ff9a1f);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.overlay .row .ghost {
+  color: var(--ink);
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.overlay .row [hidden] { display: none; }
+
+.share-card { width: min(460px, 100%); }
+.share-card .tip { margin: 10px 0 0; }
+
+#share-img {
+  display: block;
+  max-width: 100%;
+  max-height: 64vh;
+  margin: 0 auto;
+  border-radius: 12px;
+  -webkit-touch-callout: default;
+  -webkit-user-select: auto;
+  user-select: auto;
+}
+
+/* 游戏须知与免责声明: read to the end, tick, then 同意并开始 (game.js TERMS_VERSION) */
+.terms-overlay {
+  z-index: 30;
+  align-items: center;
+  padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+  background: rgba(12, 4, 26, 0.94);
+}
+.overlay .terms-card {
+  display: flex;
+  flex-direction: column;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 20px);
+  max-height: calc(100dvh - 20px);
+  padding: 14px 14px 12px;
+  text-align: left;
+  transform: none;
+}
+.overlay .terms-card h2 { text-align: center; font-size: 21px; margin-bottom: 4px; }
+.terms-lead { margin: 0 0 8px; font-size: 13px; text-align: center; color: #ffd0a0; opacity: 1; }
+.terms-body {
+  flex: 1 1 auto;
+  min-height: 120px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  padding: 10px 12px 6px;
+  border-radius: 12px;
+  background: #fff7e8;
+  color: #2a1240;
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-user-select: text;
+  user-select: text;
+}
+.terms-body ol { margin: 0; padding-left: 1.5em; text-align: left; }
+.terms-body li { margin: 0 0 9px; }
+.terms-body li b { color: #b0001c; }
+.terms-end { margin: 8px 0 4px; text-align: center; font-size: 13px; color: #8a7aa8; opacity: 1; }
+.terms-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 2px 0;
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  cursor: pointer;
+}
+.terms-check input { width: 22px; height: 22px; margin: 0; flex: none; accent-color: #ffcf3a; }
+.terms-check.off { opacity: 0.45; cursor: default; }
+.terms-hint { margin: 6px 0 0; font-size: 13px; text-align: center; color: #ffcf3a; opacity: 1; }
+.terms-hint[hidden] { display: none; }
+.terms-card .row { margin-top: 10px; }
+.terms-card .row button { flex: 1 1 0; padding: 12px 10px; font-size: 17px; }
+.terms-card .row button:disabled { filter: grayscale(0.9); opacity: 0.5; cursor: default; }
+
+/* ❓ 玩法说明 (index.html #help): the terms card's look, with headings and plain lists */
+.help-body h3 { margin: 10px 0 4px; font-size: 16px; color: #b0001c; }
+.help-body h3:first-child { margin-top: 2px; }
+.help-body p { margin: 0 0 6px; opacity: 1; }
+.help-body ul { margin: 0 0 4px; padding-left: 1.2em; }
+.help-body li { margin: 0 0 6px; }
+.help-body li b { color: #2a1240; }

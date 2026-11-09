@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#1b0f2e">
+<title>老谋大富翁 · 老谋游戏</title>
+<meta name="description" content="纯属娱乐的狗狗小游戏：看狗狗新闻点买涨买跌，3 天里把 10,000 虚拟金币翻几倍。游戏内容全部虚构，金币不能充值提现。">
+<meta itemprop="name" content="老谋大富翁 · 老谋游戏">
+<meta itemprop="description" content="纯属娱乐的狗狗小游戏：看狗狗新闻点买涨买跌，3 天里把 10,000 虚拟金币翻几倍。游戏内容全部虚构，金币不能充值提现。">
+<meta itemprop="image" content="assets/share.jpg">
+<meta property="og:type" content="website">
+<meta property="og:title" content="老谋大富翁 · 老谋游戏">
+<meta property="og:description" content="纯属娱乐的狗狗小游戏：看狗狗新闻点买涨买跌，3 天里把 10,000 虚拟金币翻几倍。游戏内容全部虚构，金币不能充值提现。">
+<meta property="og:image" content="assets/share.jpg">
+<link rel="icon" href="assets/laomou.webp">
+<link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+<canvas id="game" aria-label="老谋大富翁游戏画面"></canvas>
+<form id="name" class="overlay" hidden autocomplete="off">
+  <div class="card">
+    <h2>给自己起个名字</h2>
+    <p>上排行榜用它，和「老谋格斗」用的是同一个名字。存在这台设备的浏览器里，标题页左上角随时能改。</p>
+    <p class="name-rule">禁止骂人、侮辱别人、色情、涉政的昵称，不合适的会被换成「匿名狗狗」。为了防作弊，本站会记录 IP、浏览器类型和本站生成的浏览器编号。</p>
+    <input id="name-input" name="playername" maxlength="12" placeholder="最多 12 个字" enterkeyhint="done" autocapitalize="off" spellcheck="false">
+    <div class="row">
+      <button id="name-skip" class="ghost" type="button">先不起</button>
+      <button type="submit">就叫这个</button>
+    </div>
+  </div>
+</form>
+<div id="share" class="overlay" hidden>
+  <div class="card share-card">
+    <img id="share-img" alt="老谋大富翁战绩图">
+    <p class="tip">手机长按图片保存 · 电脑点「下载图片」</p>
+    <div class="row">
+      <button id="share-native" type="button" hidden>分享</button>
+      <a id="share-dl" class="btn" download="老谋大富翁战绩.png" href="#">下载图片</a>
+      <button id="share-close" class="ghost" type="button">关闭</button>
+    </div>
+  </div>
+</div>
+<!-- 游戏须知与免责声明: must be read to the end and agreed before the first round, the tutorial or a replay (game.js
+     TERMS_VERSION; a new version asks again). Changing the text below: bump TERMS_VERSION in game.js. -->
+<div id="terms" class="overlay terms-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="terms-title">
+  <div class="card terms-card">
+    <h2 id="terms-title">游戏须知与免责声明</h2>
+    <p class="terms-lead">开始之前，请完整阅读以下内容。往下滑到底，勾选同意后才能开始。</p>
+    <div id="terms-body" class="terms-body" tabindex="0">
+      <ol>
+        <li><b>纯属虚构的娱乐游戏。</b>「老谋大富翁」是一款休闲娱乐小游戏，只供消遣。</li>
+        <li><b>内容全部虚构、随机生成。</b>游戏里的狗狗名称、价格、走势图（K 线）、新闻、消息来源、涨跌和「明日预告」，全部由程序随机生成，是编出来的故事。</li>
+        <li><b>与任何真实产品无关。</b>游戏内容与任何真实的公司、股票、证券、期货、基金、外汇、数字货币、理财产品或其他金融产品都没有任何关系，也不反映、不预测任何真实行情。</li>
+        <li><b>金币是虚拟道具，没有现实价值。</b>游戏内的「金币」只是游戏里的计分道具，不是钱，没有任何现实价值。</li>
+        <li><b>不能充值、不能提现。</b>金币不能充值、购买、兑换、转让、赠送、提现，也不能以任何形式换取现金、实物或其他财物。本游戏完全免费，没有任何付费内容。</li>
+        <li><b>不涉及真实资金。</b>玩游戏不需要、也不会产生任何真实资金的往来；本站不会以任何理由向你收钱或索要转账。</li>
+        <li><b>不构成投资建议。</b>本游戏不提供、也不构成任何投资建议、投资咨询、推荐股票、带单、喊单或理财服务。</li>
+        <li><b>作者和本站不做任何投资相关的事。</b>作者及本站不组织、不参与、不推荐任何投资、交易或理财活动，没有任何收费群、付费课程、会员、内部消息或交易渠道。</li>
+        <li><b>玩法只是游戏规则。</b>游戏里的「涨停」「跌停」「买涨」「买跌（做空）」「杠杆」「爆仓」「熔断」等，只是这个游戏自己的规则，和真实市场的规则、风险完全不同。</li>
+        <li><b>切勿模仿。</b>请不要模仿游戏中的任何操作，也不要依据游戏里的结果、排名或任何内容，做出任何真实的投资或交易决定。</li>
+        <li><b>谨防诈骗。</b>任何人以本游戏、作者或本站的名义向你推荐投资、理财，拉你进群「带单」「荐股」，或向你收费、索要转账、索要账号密码，都与本站无关，一律是骗局。请不要相信，及时向平台和警方（110 / 96110 反诈专线）举报。</li>
+        <li><b>排行榜只比游戏分数。</b>排行榜、战绩图只展示游戏内的分数，没有任何奖品、奖金或现实回报。</li>
+        <li><b>未成年人请合理安排时间。</b>未成年人请在监护人指导下游玩，注意休息，合理安排游戏时间，不要沉迷。</li>
+        <li><b>真实投资有风险。</b>现实中的投资理财有风险，可能亏损本金。如有需要，请通过依法持牌的正规机构办理，并独立判断、谨慎决策。</li>
+        <li><b>数据与隐私。</b>为了防作弊、统计人数和显示排行榜，本站会记录 IP、浏览器类型和本站生成的浏览器编号，以及你在游戏里的操作记录（用于回放和校验成绩），不收集其他个人信息。</li>
+        <li><b>同意后才能游戏。</b>点「同意并开始」即表示你已阅读、理解并同意以上全部内容；不同意请点「不同意」离开。本须知更新后会请你重新阅读确认。</li>
+      </ol>
+      <p class="terms-end" id="terms-end">—— 已经到底了 ——</p>
+    </div>
+    <label class="terms-check" id="terms-check-label">
+      <input type="checkbox" id="terms-check" disabled>
+      <span>我已阅读、理解并同意以上全部内容</span>
+    </label>
+    <p class="terms-hint" id="terms-hint">请先往下滑，读到最后</p>
+    <div class="row">
+      <button id="terms-no" class="ghost" type="button">不同意</button>
+      <button id="terms-yes" type="button" disabled>同意并开始</button>
+    </div>
+  </div>
+</div>
+<!-- ❓ 玩法说明 (game.js openHelp, from the title): the game in plain words, for people who never traded (11-08) -->
+<div id="help" class="overlay terms-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="help-title">
+  <div class="card terms-card">
+    <h2 id="help-title">玩法说明</h2>
+    <p class="terms-lead">不用懂炒股：看新闻，猜涨跌，见好就收。</p>
+    <div id="help-body" class="terms-body help-body" tabindex="0">
+      <h3>一句话</h3>
+      <p>你有 10,000 金币。新闻说哪只狗要涨，就「押涨」；要跌，就「押跌」。猜对了就赚，赚了点「收手」把钱拿回来。玩 3 天，看最后钱翻了几倍。</p>
+      <h3>屏幕上都是什么</h3>
+      <ul>
+        <li><b>最上面</b>：你一共有多少钱、翻了几倍、今天第几天、还剩几秒。</li>
+        <li><b>三张狗狗卡片</b>：三只能押的狗，点哪张就看哪只。押了的狗，卡片会写着「涨 / 跌」和赚亏几成。</li>
+        <li><b>中间的图</b>：这只狗的价格走势，红的是涨，绿的是跌，右边是现在的价格。</li>
+        <li><b>新闻卡</b>：突然弹出来，告诉你谁要涨、谁要跌。左上角写着是谁说的。</li>
+        <li><b>下面的面板</b>：「手上的钱」是还没押的钱；右边写着这只狗你押了多少、现在赚还是亏。</li>
+      </ul>
+      <h3>按钮</h3>
+      <ul>
+        <li><b>押涨</b>：赌它涨，涨了就赚，跌了就亏。</li>
+        <li><b>押跌</b>：赌它跌，跌了就赚，涨了就亏。</li>
+        <li><b>收手</b>：押了以后会出现，把这一单结算掉，钱回到手上。</li>
+        <li><b>押¼ / 押一半 / 全押</b>：一次押多少钱。押着的时候，它也表示收手收多少。</li>
+        <li><b>不放大 / 放大3× / 放大10×</b>：赚的和亏的都放大几倍。放大越多，越容易碰到爆仓线。</li>
+      </ul>
+      <h3>新闻听谁的</h3>
+      <ul>
+        <li><b>狗市快讯</b>：靠谱，跟着做。</li>
+        <li><b>群聊小道消息</b>：一半是假的，可能会被「辟谣」，辟谣了价格就往回走。</li>
+        <li><b>老谋喝多了</b>：他说的常常要反着听。</li>
+      </ul>
+      <h3>会遇到的几个词</h3>
+      <ul>
+        <li><b>涨停</b>：今天涨到头了，押不进；押涨的想收手赶紧收。</li>
+        <li><b>跌停</b>：今天跌到头了，押不进；押跌的想收手赶紧收。</li>
+        <li><b>开板</b>：到头之后又能动了，价格常常往回走。</li>
+        <li><b>熔断</b>：老谋骂人了，全场暂停 2 秒，谁都不能买卖。</li>
+        <li><b>爆仓</b>：放大以后亏到了爆仓线（图上的红色虚线），这一单押的钱就没了。</li>
+        <li><b>明日预告</b>：每天收盘前，告诉你明天的新闻。没收手的会留到明天（过夜）。</li>
+        <li><b>跳空</b>：隔了一夜，第二天开盘价直接跳上去或掉下来。</li>
+      </ul>
+      <p class="terms-end">金币是游戏道具，不是钱，这里的一切都是编出来的。</p>
+    </div>
+    <div class="row">
+      <button id="help-tut" class="ghost" type="button">玩一遍教程</button>
+      <button id="help-close" type="button">知道了</button>
+    </div>
+  </div>
+</div>
+<script src="sim.js?v=4"></script>
+<script src="game.js?v=18"></script>
+</body>
+</html>
